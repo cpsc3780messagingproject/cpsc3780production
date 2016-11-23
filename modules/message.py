@@ -1,4 +1,4 @@
-class message():
+class Message:
     def __init__(self, sequence, type, source, destination, payload):
         self.seq = sequence
         self.type = type
