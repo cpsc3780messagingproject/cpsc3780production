@@ -1,6 +1,6 @@
 import socket
 import pickle
-import message
+from message import Message
 
 class MessageServer():
     def __init__(self, port):
@@ -17,11 +17,11 @@ class MessageServer():
         self.peers = set()
         self.messages = {}
         
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind((self.host, self.port))
 
     def activate():
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.listen(1)
             conn, addr = s.accept()
             # This could be understood as the 'main' function of the server.

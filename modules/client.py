@@ -11,7 +11,7 @@ class MessageClient():
         random.seed(None)
         self.id = randint(1, 1000000000)
         
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind((self.host, self.port))
 
     def send(self, message, target):
