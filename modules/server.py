@@ -14,7 +14,6 @@
 import time
 import socket
 import pickle
-import stringIO
 from message import Message
 
 class MessageServer():
@@ -30,13 +29,12 @@ class MessageServer():
                                             # into the highest open rank. 
         self.peers = set()
 		self.client_list = {}
-        self.messages = {}
+        self.messages = []
         
+
+    def activate(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind((self.host, self.port))
-
-    def activate():
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.listen(1)
             conn, addr = s.accept()
             # This could be understood as the 'main' function of the server.
@@ -45,3 +43,12 @@ class MessageServer():
             # its socket upon __init__ currently; I'm not sure if this is
             # actually an intelligent way to construct the class - we may
             # want to move s.bind() to server.activate().
+			print 'Connected by', addr
+            while 1:
+                data = conn.recv()
+                if not data: break
+                conn.sendall(data)
+            
+    def receive_message(self, recvd_message):
+        reconstructed_message = pickle.loads(recvd_message)
+	    
