@@ -14,7 +14,6 @@
 import time
 import socket
 import pickle
-import stringIO
 from message import Message
 
 class MessageClient():
