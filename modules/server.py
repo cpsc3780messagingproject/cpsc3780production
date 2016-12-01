@@ -14,6 +14,7 @@
 import time
 import socket
 import pickle
+import stringIO
 from message import Message
 
 class MessageServer():
@@ -28,6 +29,7 @@ class MessageServer():
                                             # network, it will slot itself
                                             # into the highest open rank. 
         self.peers = set()
+		self.client_list = {}
         self.messages = {}
         
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:

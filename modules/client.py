@@ -14,6 +14,7 @@
 import time
 import socket
 import pickle
+import stringIO
 from message import Message
 
 class MessageClient():
@@ -29,7 +30,7 @@ class MessageClient():
             s.bind((self.host, self.port))
 
     def send(self, message, target):
-
+        
         return null # to get annoying red lines out of the way rn
 
     def construct_message(self, message_type, message, target):
