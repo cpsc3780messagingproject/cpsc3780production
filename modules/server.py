@@ -27,7 +27,6 @@ class MessageServer():
                                             # 0, upon hooking a server into a
                                             # network, it will slot itself
                                             # into the highest open rank. 
-        self.uniqueclients = set()
         self.peers = set()
         self.messages = {}
         

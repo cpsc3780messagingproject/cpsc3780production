@@ -19,12 +19,12 @@
 while True:
     mode = input("Run in server mode? [y/n]")
     if mode == 'y':
-        print("Running in server mode. Esc at any time to exit.")
-        
-        #
+        print("Running in server mode.")
+        #net_serv = input("Please enter the IP address of at least one other 
+        #                  server on desired network (0 to run as a sole 
+        #                  server)."
 
-        if input == chr(27):
-            break
+        
         # Run in server mode. Probably fairly lightweight code.
 
         # Construct new MessageServer() object.
@@ -37,11 +37,5 @@ while True:
         
         break
     else:
-        print("Well this isn't really a loop is it. Shit.")
-        # Guess who just figured out there's no real way to loop back to the 
-        # top.
-        # This guy. That's who.
-        # Oh well this is all just placeholder garbage anyway, basically just
-        # pseudocode. Can be fixed later.
 
 exit()
