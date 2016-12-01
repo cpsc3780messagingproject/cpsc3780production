@@ -1,3 +1,17 @@
+##############################################################################
+# Seiren : Simple Python Messaging Network
+# CPSC 3780 Project
+# Authors: Tyler Bertram, Jarvis Zazalack
+#   A simple, object-oriented and dynamically-constructed messaging network
+#   using UDP to pass message strings while handling small-scale routing
+#   between multiple networks.
+#
+#   client.py:
+#       Client object which contains all relevant functions for using Seiren
+#       in client mode.
+##############################################################################
+
+import time
 import socket
 import pickle
 from message import Message
