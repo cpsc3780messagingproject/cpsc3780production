@@ -34,7 +34,7 @@ class MessageServer():
 
     def activate(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.setdefaulttimeout(5)
+        #s.setdefaulttimeout(5)
         s.bind((self.host, self.port))
         s.listen(1)
         conn, addr = s.accept()
