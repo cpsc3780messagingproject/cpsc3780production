@@ -28,7 +28,7 @@ while True:
         #net_serv = input("Please enter the IP address of at least one other 
         #                  server on desired network (0 to run as a sole 
         #                  server)."
-        seiren_server = MessageServer(30019)
+        seiren_server = MessageServer(5000)
         seiren_server.activate()
         
         # Run in server mode. Probably fairly lightweight code.

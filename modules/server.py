@@ -40,7 +40,7 @@ class MessageServer():
         conn, addr = s.accept()
         print "Connected by ", addr
         while True:
-            new_id = randint(1, 1000000000)
+            new_id = randint(1, 100000000)
             while True:
                 if new_id in self.client_list:
                     new_id = randint(1, 1000000000)
