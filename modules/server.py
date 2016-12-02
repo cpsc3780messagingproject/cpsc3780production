@@ -33,7 +33,7 @@ class MessageServer():
         
 
     def activate(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #s.setdefaulttimeout(5)
         s.bind((self.host, self.port))
         s.listen(1)
