@@ -29,6 +29,7 @@ class MessageClient():
             s.setdefaulttimeout(5)
             s.connect(self.host)
             clientid = pickle.loads(s.recv(65536))#receive ID from server
+            print (clientid)
             userlist = pickle.loads(s.recv(65536))#receive and print the user list
             print (userlist)
             
