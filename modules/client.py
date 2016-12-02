@@ -23,15 +23,16 @@ class MessageClient():
         self.mess_seq = 0
         
         random.seed(None)
-        self.id = randint(1, 100000000))
+        self.id
         
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.setdefaulttimeout(5)
             s.connect(self.host)
             clientid = pickle.loads(s.recv(65536))#receive ID from server
-            print (clientid)
+            print ("Your assigned ID is: ", clientid.payload())
+            self.id = clientid.payload()
             userlist = pickle.loads(s.recv(65536))#receive and print the user list
-            print (userlist)
+            print("Userlist: ", userlist.payload())
             
             
 
