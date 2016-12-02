@@ -55,6 +55,7 @@ class MessageServer():
                     uselist_string = uselist_string + " " + key
                 uselist_message = construct_message("USR", uselist_string, id_str)
                 conn.send(self.pickle_message(uselist_message))
+                break
                 
     def receive_message(self, recvd_message):
         reconstructed_message = pickle.loads(recvd_message)

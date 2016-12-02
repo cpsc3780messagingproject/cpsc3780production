@@ -24,17 +24,21 @@ while True:
         #                  server on desired network (0 to run as a sole 
         #                  server)."
         seiren_server = MessageServer(30019)
+        seiren_server.activate()
         
         # Run in server mode. Probably fairly lightweight code.
 
         # Construct new MessageServer() object.
+        
+        break
 
     if mode == 'n':
         print("Running in client mode.")
+        hostname = input("Input the IP address of the desired server: ")
         # Run in client mode. Takes inputs, sends messages. More complicated.
 
         # Construct new MessageClient() object.
-        seiren_client = MessageClient
+        seiren_client = MessageClient(hostname)
         
         #Receive userlist from server upon connecting.
         #Get input from user, conver to message.
@@ -44,6 +48,5 @@ while True:
         #This SHOULD be basically all the client needs to do.
         
         break
-    else:
 
 exit()

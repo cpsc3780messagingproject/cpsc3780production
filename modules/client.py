@@ -17,7 +17,7 @@ import pickle
 from message import Message
 
 class MessageClient():
-    def __init__(self, port, server):
+    def __init__(self, server):
         self.messages = []
         self.host = server
         self.mess_seq = 0
