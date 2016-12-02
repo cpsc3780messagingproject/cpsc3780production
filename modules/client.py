@@ -22,7 +22,6 @@ class MessageClient():
         self.host = server
         self.mess_seq = 0
         
-        random.seed(None)
         self.id
         
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:

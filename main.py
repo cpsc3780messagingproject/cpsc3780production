@@ -16,6 +16,7 @@
 #       z
 ##############################################################################
 
+import time
 from modules.message import Message
 from modules.server import MessageServer
 from modules.client import MessageClient
@@ -50,6 +51,8 @@ while True:
         #Block until ACK received.
         #Every x seconds, send GET to receive all messages.
         #This SHOULD be basically all the client needs to do.
+        
+        time.sleep(300)
         
         break
 
