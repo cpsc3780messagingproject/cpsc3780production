@@ -36,7 +36,6 @@ class MessageServer():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #s.setdefaulttimeout(5)
         s.bind((self.host, self.port))
-        print(s.gethostbyname(host))
         s.listen(1)
         conn, addr = s.accept()
         print "Connected by ", addr
@@ -51,12 +50,12 @@ class MessageServer():
             self.client_list.update({'id_str': 
                                      s.gethostbyname(gethostname())})
             id_assign = construct_message("ASN", new_id, id_str)
-            conn.sendto(self.pickle_message(id_assign))
+            conn.send(self.pickle_message(id_assign))
             uselist_string = ""
             for key in self.client_list:
                 uselist_string = uselist_string + " " + key
             uselist_message = construct_message("USR", uselist_string, id_str)
-            conn.sendto(self.pickle_message(uselist_message))
+            conn.send(self.pickle_message(uselist_message))
             break
                 
     def receive_message(self, recvd_message):
