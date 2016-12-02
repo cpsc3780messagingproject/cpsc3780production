@@ -61,7 +61,7 @@ class MessageServer():
         reconstructed_message = pickle.loads(recvd_message)
         return reconstructed_message
 	    
-    def pickle_message(self, message)
+    def pickle_message(self, message):
         pickled_message = pickle.dumps(message)
         return pickled_message
         
