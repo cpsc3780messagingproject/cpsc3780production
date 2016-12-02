@@ -36,7 +36,7 @@ class MessageServer():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #s.setdefaulttimeout(5)
         s.bind((self.host, self.port))
-        print(s.gethostname())
+        print(s.gethostbyname(host))
         s.listen(1)
         conn, addr = s.accept()
         print "Connected by ", addr
