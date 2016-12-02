@@ -33,29 +33,29 @@ class MessageServer():
         
 
     def activate(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.setdefaulttimeout(5)
-            s.bind((self.host, self.port))
-            s.listen(1)
-            conn, addr = s.accept()
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.setdefaulttimeout(5)
+        s.bind((self.host, self.port))
+        s.listen(1)
+        conn, addr = s.accept()
+        while True:
+            new_id = randint(1, 1000000000)
             while True:
-                new_id = randint(1, 1000000000)
-                while True:
-                    if new_id in self.client_list:
-                        new_id = randint(1, 1000000000)
-                    else:
-                        break
-                id_str = '{:0>10}'.format(new_id)
-                self.client_list.update({'id_str': 
-                                         s.gethostbyname(gethostname())})
-                id_assign = construct_message("ASN", new_id, id_str)
-                conn.send(self.pickle_message(id_assign))
-                uselist_string = ""
-                for key in self.client_list:
-                    uselist_string = uselist_string + " " + key
-                uselist_message = construct_message("USR", uselist_string, id_str)
-                conn.send(self.pickle_message(uselist_message))
-                break
+                if new_id in self.client_list:
+                    new_id = randint(1, 1000000000)
+                else:
+                    break
+            id_str = '{:0>10}'.format(new_id)
+            self.client_list.update({'id_str': 
+                                     s.gethostbyname(gethostname())})
+            id_assign = construct_message("ASN", new_id, id_str)
+            conn.send(self.pickle_message(id_assign))
+            uselist_string = ""
+            for key in self.client_list:
+                uselist_string = uselist_string + " " + key
+            uselist_message = construct_message("USR", uselist_string, id_str)
+            conn.send(self.pickle_message(uselist_message))
+            break
                 
     def receive_message(self, recvd_message):
         reconstructed_message = pickle.loads(recvd_message)
