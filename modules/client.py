@@ -26,7 +26,7 @@ class MessageClient():
         
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         #s.setdefaulttimeout(5)
-        s.connect(self.host)
+        s.connect((self.host, 30019))
         clientid = pickle.loads(s.recv(65536))#receive ID from server
         print ("Your assigned ID is: ", clientid.payload())
         self.id = clientid.payload()
