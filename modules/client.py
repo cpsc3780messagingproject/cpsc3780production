@@ -22,7 +22,7 @@ class MessageClient():
         self.host = server
         self.mess_seq = 0
         
-        self.id
+        self.id = 0
         
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             #s.setdefaulttimeout(5)
