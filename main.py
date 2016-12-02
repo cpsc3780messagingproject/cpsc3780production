@@ -16,8 +16,9 @@
 #       z
 ##############################################################################
 
-import message.py
-import client.py
+from modules import message
+from modules import server
+from modules import client
 
 while True:
     mode = raw_input("Run in server mode? [y/n]")
