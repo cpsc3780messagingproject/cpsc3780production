@@ -28,6 +28,11 @@ class MessageClient():
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.setdefaulttimeout(5)
             s.connect(self.host)
+            clientid = pickle.loads(s.recv(65536))#receive ID from server
+            userlist = pickle.loads(s.recv(65536))#receive and print the user list
+            print (userlist)
+            
+            
 
     def construct_message(self, message_type, message, target):
         seq_str = '{:0>3}'.format(self.mess_seq)

@@ -23,11 +23,18 @@ class MessageClient():
         self.mess_seq = 0
         
         random.seed(None)
-        self.id = randint(1, 1000000000)
+        self.id = randint(1, 100000000))
         
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.setdefaulttimeout(5)
             s.connect(self.host)
+            pickledid = s.recv(1024)
+            pickledlist = s.recv(1024)
+            clientid = pickle.loads(s.recv(65536))
+            userlist = pickle.loads(s.recv(65536))
+            print (userlist)
+            #receive ID from server
+            #receive and print the user list
 
     def construct_message(self, message_type, message, target):
         seq_str = '{:0>3}'.format(self.mess_seq)
