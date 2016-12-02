@@ -28,7 +28,7 @@ class MessageServer():
                                             # network, it will slot itself
                                             # into the highest open rank. 
         self.peers = set()
-		self.client_list = {}
+        self.client_list = {}
         self.messages = []
         
 
