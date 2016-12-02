@@ -38,7 +38,7 @@ class MessageServer():
         s.bind((self.host, self.port))
         s.listen(1)
         conn, addr = s.accept
-        print ("Connected by ", addr)
+        print "Connected by ", addr
         while True:
             new_id = randint(1, 1000000000)
             while True:
