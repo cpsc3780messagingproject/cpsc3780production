@@ -22,7 +22,7 @@ from modules.server import MessageServer
 from modules.client import MessageClient
 
 while True:
-    mode = raw_input("Run in server mode? [y/n]")
+    mode = input("Run in server mode? [y/n]")
     if mode is "y":
         print("Running in server mode.")
         #net_serv = input("Please enter the IP address of at least one other 
@@ -39,11 +39,12 @@ while True:
 
     if mode is "n":
         print("Running in client mode.")
-        hostname = raw_input("Input the IP address of the desired server: ")
+        hostname = input("Input the IP address of the desired server: ")
         # Run in client mode. Takes inputs, sends messages. More complicated.
 
         # Construct new MessageClient() object.
         seiren_client = MessageClient(hostname)
+        seiren_client.activate()
         
         #Receive userlist from server upon connecting.
         #Get input from user, conver to message.

@@ -14,11 +14,12 @@
 import time
 import socket
 import pickle
-from message import Message
+from modules.message import Message
+from modules.message_factory import construct_message
 
 class MessageServer():
     def __init__(self, port):
-        self.host = ''
+        self.host = '127.0.0.1'
         self.port = port
         self.rank = 0                       # Rank is used to determine which
                                             # other server the server should
@@ -33,13 +34,17 @@ class MessageServer():
         
 
     def activate(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         #s.setdefaulttimeout(5)
         s.bind((self.host, self.port))
-        s.listen(1)
-        conn, addr = s.accept()
-        print "Connected by ", addr
+        #s.listen(1)
+        #conn, addr = s.accept()
         while True:
+            data, addr = s.recvfrom(65536)
+            print ("Connected by ", addr)
+            unpickled_data = pickle.loads(data)
+            print ("Client sent message: ", unpickled_data.payload)
+        """while True:
             new_id = randint(1, 100000000)
             while True:
                 if new_id in self.client_list:
@@ -56,21 +61,5 @@ class MessageServer():
                 uselist_string = uselist_string + " " + key
             uselist_message = construct_message("USR", uselist_string, id_str)
             conn.send(self.pickle_message(uselist_message))
-            break
-                
-    def receive_message(self, recvd_message):
-        reconstructed_message = pickle.loads(recvd_message)
-        return reconstructed_message
-	    
-    def pickle_message(self, message):
-        pickled_message = pickle.dumps(message)
-        return pickled_message
-        
-    def construct_message(self, message_type, message, target):
-        seq_str = '{:0>3}'.format(1)
-        id_str = '{:0>10}'.format(0)
-        target_str = '{:0>10}'.format(target)
-        new_message = Message(seq_str, message_type, id_str, target_str, 
-                              message)
-        return new_message
+            break"""
         
