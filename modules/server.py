@@ -34,21 +34,41 @@ class MessageServer():
 
     def activate(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.setdefaulttimeout(5)
             s.bind((self.host, self.port))
             s.listen(1)
             conn, addr = s.accept()
-            # This could be understood as the 'main' function of the server.
-            # Routing logic, listening, etc. will all be done when 
-            # server.activate() is called. Note that the server constructs
-            # its socket upon __init__ currently; I'm not sure if this is
-            # actually an intelligent way to construct the class - we may
-            # want to move s.bind() to server.activate().
-			print 'Connected by', addr
-            while 1:
-                data = conn.recv()
-                if not data: break
-                conn.sendall(data)
-            
+            while True
+                new_id = randint(1, 1000000000)
+                while True
+                    if new_id in self.client_list:
+                        new_id = randint(1, 1000000000)
+                    else
+                        break
+                id_str = '{:0>10}'.format(new_id)
+                self.client_list.update({'id_str': 
+                                         s.gethostbyname(gethostname())})
+                id_assign = construct_message("ASN", new_id, new_id)
+                conn.send(self.pickle_message(id_assign))
+                uselist_string = ""
+                for key in self.client_list:
+                    uselist_string = uselist_string + " " + key
+                uselist_message = construct_message("USR", uselist, new_id)
+                conn.send(self.pickle_message(uselist_message))
+                
     def receive_message(self, recvd_message):
         reconstructed_message = pickle.loads(recvd_message)
+        return reconstructed_message
 	    
+    def pickle_message(self, message)
+        pickled_message = pickle.dumps(message)
+        return pickled_message
+        
+    def construct_message(self, message_type, message, target):
+        seq_str = '{:0>3}'.format(1)
+        id_str = '{:0>10}'.format(0)
+        target_str = '{:0>10}'.format(target)
+        new_message = Message(seq_str, message_type, id_str, target_str, 
+                              message)
+        return new_message
+        
