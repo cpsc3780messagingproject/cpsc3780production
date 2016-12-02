@@ -34,7 +34,7 @@ while True:
 
     if mode is "n":
         print("Running in client mode.")
-        hostname = input("Input the IP address of the desired server: ")
+        hostname = raw_input("Input the IP address of the desired server: ")
         # Run in client mode. Takes inputs, sends messages. More complicated.
 
         # Construct new MessageClient() object.
