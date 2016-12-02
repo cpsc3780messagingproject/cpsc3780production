@@ -38,12 +38,12 @@ class MessageServer():
             s.bind((self.host, self.port))
             s.listen(1)
             conn, addr = s.accept()
-            while True
+            while True:
                 new_id = randint(1, 1000000000)
-                while True
+                while True:
                     if new_id in self.client_list:
                         new_id = randint(1, 1000000000)
-                    else
+                    else:
                         break
                 id_str = '{:0>10}'.format(new_id)
                 self.client_list.update({'id_str': 
