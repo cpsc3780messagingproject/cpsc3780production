@@ -23,7 +23,7 @@ while True:
         #net_serv = input("Please enter the IP address of at least one other 
         #                  server on desired network (0 to run as a sole 
         #                  server)."
-
+        seiren_server = MessageServer(30019)
         
         # Run in server mode. Probably fairly lightweight code.
 
@@ -34,6 +34,14 @@ while True:
         # Run in client mode. Takes inputs, sends messages. More complicated.
 
         # Construct new MessageClient() object.
+        seiren_client = MessageClient
+        
+        #Receive userlist from server upon connecting.
+        #Get input from user, conver to message.
+        #Send message. Wait for response x time - if no ACK, resend message.\
+        #Block until ACK received.
+        #Every x seconds, send GET to receive all messages.
+        #This SHOULD be basically all the client needs to do.
         
         break
     else:
