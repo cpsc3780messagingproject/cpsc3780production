@@ -16,8 +16,8 @@
 #       z
 ##############################################################################
 
-import MessageServer from message.py
-import MessageClient from client.py
+import message.py
+import client.py
 
 while True:
     mode = raw_input("Run in server mode? [y/n]")
