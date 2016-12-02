@@ -48,12 +48,12 @@ class MessageServer():
                 id_str = '{:0>10}'.format(new_id)
                 self.client_list.update({'id_str': 
                                          s.gethostbyname(gethostname())})
-                id_assign = construct_message("ASN", new_id, new_id)
+                id_assign = construct_message("ASN", new_id, id_str)
                 conn.send(self.pickle_message(id_assign))
                 uselist_string = ""
                 for key in self.client_list:
                     uselist_string = uselist_string + " " + key
-                uselist_message = construct_message("USR", uselist, new_id)
+                uselist_message = construct_message("USR", uselist_string, id_str)
                 conn.send(self.pickle_message(uselist_message))
                 
     def receive_message(self, recvd_message):
