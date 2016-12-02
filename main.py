@@ -52,8 +52,6 @@ while True:
         #Every x seconds, send GET to receive all messages.
         #This SHOULD be basically all the client needs to do.
         
-        time.sleep(300)
-        
         break
 
 exit()
