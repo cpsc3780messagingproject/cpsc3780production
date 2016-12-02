@@ -24,14 +24,14 @@ class MessageClient():
         
         self.id = 0
         
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            #s.setdefaulttimeout(5)
-            s.connect(self.host)
-            clientid = pickle.loads(s.recv(65536))#receive ID from server
-            print ("Your assigned ID is: ", clientid.payload())
-            self.id = clientid.payload()
-            userlist = pickle.loads(s.recv(65536))#receive and print the user list
-            print("Userlist: ", userlist.payload())
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        #s.setdefaulttimeout(5)
+        s.connect(self.host)
+        clientid = pickle.loads(s.recv(65536))#receive ID from server
+        print ("Your assigned ID is: ", clientid.payload())
+        self.id = clientid.payload()
+        userlist = pickle.loads(s.recv(65536))#receive and print the user list
+        print("Userlist: ", userlist.payload())
             
             
 
