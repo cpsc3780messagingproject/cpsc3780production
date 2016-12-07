@@ -61,7 +61,7 @@ class MessageClient():
         self.mess_seq = 0
         self.id = 0
     
-    def sendThread(self, threadName, flags):
+    def sendThread(self, flags):
         while True:
             targ_id = raw_input("Please input the user to send to: ")
             raw_msg = raw_input("Please input a message to transmit: ")
@@ -80,7 +80,7 @@ class MessageClient():
             if (continue_flag == 'n'):
                 break
     
-    def getThread(self, threadName, delay):
+    def getThread(self, delay):
         pass
     
     def activate(self):
