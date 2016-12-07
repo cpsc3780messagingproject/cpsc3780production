@@ -39,7 +39,7 @@ class sendThread (threading.thread):
                     else:
                         time.sleep(1)
                 
-                self.id++
+                self.sequence = self.sequence + 1
                 continue_flag = raw_input("Send another message? (y/n)")
                 if (continue_flag == 'n'):
                     break
