@@ -55,13 +55,13 @@ class getThread (threading.thread):
         
 """
 class MessageClient():
-    def __init__(self, server):
+    def __init__(self, threadName, server):
         self.messages = []
         self.host = server
         self.mess_seq = 0
         self.id = 0
     
-    def sendThread(self, flags):
+    def sendThread(self, threadName, flags):
         while True:
             targ_id = raw_input("Please input the user to send to: ")
             raw_msg = raw_input("Please input a message to transmit: ")
@@ -102,5 +102,5 @@ class MessageClient():
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 print("Userlist: ", unpickled_data.payload)
                 
-            thread.start_new_thread(sendThread("this is bullshit"))
-            thread.start_new_thread(getThread(3))
+            thread.start_new_thread(sendThread, ("Thread1", "this is bullshit"))
+            thread.start_new_thread(getThread, ("Thread2", 3))
