@@ -8,8 +8,7 @@ def construct_message(message_type, sequence, senderid, targetid, message):
         3:      'ACK', #used to acknowledge receipt of messages
         4:      'USR', #indicates a server is sending a client a userlist
         5:      'ASN', #server is assigning a value to a client
-        6:      'IDR', #client is first connecting; requesting id
-        10:     'OFF'  #client is signing off
+        6:      'IDR' #client is first connecting; requesting id
         }
         seq_str = '{:0>3}'.format(sequence)
         id_str = '{:0>10}'.format(senderid)
