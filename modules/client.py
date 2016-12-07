@@ -61,7 +61,8 @@ class MessageClient():
         self.mess_seq = 0
         self.id = 0
     
-    def sendThread(self, threadName, flags):
+    def activate(self):
+        def sendThread(threadName, flags):
         while True:
             targ_id = raw_input("Please input the user to send to: ")
             raw_msg = raw_input("Please input a message to transmit: ")
@@ -80,10 +81,9 @@ class MessageClient():
             if (continue_flag == 'n'):
                 break
     
-    def getThread(self, threadName, delay):
-        pass
-    
-    def activate(self):
+        def getThread(threadName, delay):
+            pass
+        
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
         while True:
