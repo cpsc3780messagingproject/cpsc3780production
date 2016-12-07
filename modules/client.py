@@ -18,7 +18,7 @@ import threading
 from modules.message import Message
 from modules.message_factory import construct_message
 
-"""class sendThread (threading.thread):
+class sendThread (threading.thread):
     def __init__(self, clientsocket, server, sequence, id):
         self.clientsocket = clientsocket
         self.server = server
@@ -26,7 +26,23 @@ from modules.message_factory import construct_message
         self.id = id
         
     def run(self):
-        
+            while True:
+                targ_id = raw_input("Please input the user to send to: ")
+                raw_msg = raw_input("Please input a message to transmit: ")
+                wrapped_msg = construct_message(1, self.sequence, self.id, 0, raw_msg) 
+                while True:
+                    s.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                    data, garbagecatch = s.recvfrom(65536)
+                    unpickled_data = pickle.loads(data)
+                    if (unpickleld_data.type == 'ACK')
+                        break
+                    else
+                        time.sleep(1)
+                
+                self.id++
+                continue_flag = raw_input("Send another message? (y/n)")
+                if (continue_flag == 'n'):
+                    break
     
 class getThread (threading.thread):
     def __init__(self, clientsocket, server, id):
@@ -35,8 +51,9 @@ class getThread (threading.thread):
         self.id = id
         
     def run(self):
+        pass
         
-"""
+
 class MessageClient():
     def __init__(self, server):
         self.messages = []
@@ -66,3 +83,18 @@ class MessageClient():
             raw_msg = raw_input("Please input a message to transmit: ")
             wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+            
+            threadLock = threading.Lock()
+            threads = []
+            
+            thread1 = sendThread(s, self.host, self.mess_seq, self.id)
+            thread2 = getThread(s, self.host, self.id)
+            
+            thread1.start()
+            thread2.start()
+            
+            threads.append(thread1)
+            threads.append(thread2)
+            
+            for t in threads:
+                t.join()
