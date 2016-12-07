@@ -14,7 +14,7 @@
 import time
 import socket
 import pickle
-import threading
+import threading from thread
 from modules.message import Message
 from modules.message_factory import construct_message
 
