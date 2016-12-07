@@ -18,7 +18,7 @@ import threading
 from modules.message import Message
 from modules.message_factory import construct_message
 
-class sendThread (threading.thread):
+"""class sendThread (threading.thread):
     def __init__(self, clientsocket, server, sequence, id):
         self.clientsocket = clientsocket
         self.server = server
@@ -30,7 +30,7 @@ class sendThread (threading.thread):
 class getThread (threading.thread):
     def __init__(self, socket, server, id):
     
-    def run(self):
+    def run(self):"""
 
 class MessageClient():
     def __init__(self, server):
