@@ -26,12 +26,17 @@ from modules.message_factory import construct_message
         self.id = id
         
     def run(self):
+        
     
 class getThread (threading.thread):
-    def __init__(self, socket, server, id):
-    
-    def run(self):"""
-
+    def __init__(self, clientsocket, server, id):
+        self.clientsocket = clientsocket
+        self.server = server
+        self.id = id
+        
+    def run(self):
+        
+"""
 class MessageClient():
     def __init__(self, server):
         self.messages = []
@@ -53,7 +58,6 @@ class MessageClient():
                 wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 data, catchgarbage = s.recvfrom(65536)
-                print("check")
                 unpickled_data = pickle.loads(data)
                 wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
