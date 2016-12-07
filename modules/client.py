@@ -11,10 +11,10 @@
 #       in client mode.
 ##############################################################################
 
+import threading
 import time
 import socket
 import pickle
-from thread import threading
 from modules.message import Message
 from modules.message_factory import construct_message
 
