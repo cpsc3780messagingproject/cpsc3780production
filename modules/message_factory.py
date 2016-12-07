@@ -2,10 +2,10 @@ from modules.message import Message
 
 def construct_message(message_type, sequence, senderid, targetid, message):
         MESSAGE_TYPES = { 
-        0: 'SRV' #used for server communication
-        1: 'SND' #used to send a message to server
-        2: 'GET' #used to receive all messages from server
-        3: 'USR' #indicates a server is sending a client a userlist
+        0: 'SRV', #used for server communication
+        1: 'SND', #used to send a message to server
+        2: 'GET', #used to receive all messages from server
+        3: 'USR', #indicates a server is sending a client a userlist
         4: 'ASN' #server is assigning a value to a client
         }
         seq_str = '{:0>3}'.format(sequence)
