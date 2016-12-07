@@ -32,13 +32,13 @@ class MessageClient():
             if (self.id == 0):
                 wrapped_msg = construct_message(6, self.mess_seq, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), self.host)
-                data, self.host = s.recvfrom(65536)
+                data, catchgarbage = s.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 self.id = unpickled_data.destination
-                print("Your assigned ID is: ", unpickled_data.destination)
+                print("Your assigned ID is: ", self.id)
                 wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), self.host)
-                data, self.host = s.recvfrom(65536)
+                data, catchgarbage = s.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), self.host)
