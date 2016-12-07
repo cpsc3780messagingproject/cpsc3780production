@@ -63,6 +63,7 @@ class MessageClient():
     
     def activate(self):
         def sendThread(threadName, flags):
+            print ("check")
             while True:
                 targ_id = raw_input("Please input the user to send to: ")
                 raw_msg = raw_input("Please input a message to transmit: ")
