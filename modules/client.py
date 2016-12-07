@@ -21,7 +21,7 @@ from modules.message_factory import construct_message
 class MessageClient():
     def __init__(self, server):
         self.messages = []
-        self.host = (server, 5000)
+        self.host = server
         self.mess_seq = 0
         self.id = 0
     
@@ -31,17 +31,18 @@ class MessageClient():
         while True:
             if (self.id == 0):
                 wrapped_msg = construct_message(6, self.mess_seq, self.id, 0, "")
-                s.sendto(pickle.dumps(wrapped_msg), self.host)
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 data, catchgarbage = s.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 self.id = unpickled_data.destination
                 print("Your assigned ID is: ", self.id)
                 wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
-                s.sendto(pickle.dumps(wrapped_msg), self.host)
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                print("check")
                 data, catchgarbage = s.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
-                s.sendto(pickle.dumps(wrapped_msg), self.host)
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 print("Userlist: ", unpickled_data.payload)
                 
             raw_msg = raw_input("Please input a message to transmit: ")
