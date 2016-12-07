@@ -14,6 +14,7 @@
 import time
 import socket
 import pickle
+import random
 from modules.message import Message
 from modules.message_factory import construct_message
 
@@ -31,56 +32,53 @@ class MessageServer():
         self.peers = set()
         self.client_list = {}
         self.messages = []
-        
+
 
     def activate(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        #s.setdefaulttimeout(5)
         s.bind((self.host, self.port))
-        #s.listen(1)
-        #conn, addr = s.accept()
-
 
 
         while True:
             data, addr = s.recvfrom(65536)
             print ("Connected by ", addr)
             unpickled_data = pickle.loads(data)
-            print ("Client sent message: ", unpickled_data.payload)
-#            if (unpickled_data.type == 'SRV'):         
-            if unpickled_data.type is 'SND':
+            print ("Client sent ", unpickled_data.type, unpickled_data.payload)
+#            if (unpickled_data.type == 'SRV'):       
+            if (unpickled_data.type == 'SND'):
                 self.messages.append(unpickled_data)
-            elif unpickled_data.type is 'IDR':
+                wrapped_msg = construct_message(3,0,0,unpickled_data.source, "Message received!")
+                s.sendto(pickle.dumps(wrapped_msg), (addr))
+
+            elif (unpickled_data.type == 'GET'):
+                while True:
+                    if (self.messages.index(unpickled_data.source) == True):
+                        message = self.messages.pop([self.messages.index(unpickled_data.source)])
+                        data, addr = s.recvfrom(65536)
+                    else:
+                        break
+                
+#            elif (unpickled_data.type == 'ACK'):
+            #forward message from client A to client B
+                
+            elif (unpickled_data.type == 'IDR'):               
                 if (addr in self.client_list):
-                    pass
+                    print("Welcome back, user!")
                 else:
-                    new_id = randint(1, 100000000)  
+                    new_id = random.randint(1, 100000000)  
                     while True:
                         if (new_id in self.client_list):
                             new_id = randint(1, 1000000000)
                         else:
                             break
-                    self.client_list[new_id] = self.host
-                    wrapped_msg = construct_message(5, self.mess_seq, 0, new_id, "")
-                    s.sendto(pickle.dumps(wrapped_msg), (addr, 5000))
-            #elif unpickled_data.type is 'OFF':
-
-        """while True:
-            new_id = randint(1, 100000000)
-            while True:
-                if new_id in self.client_list:
-                    new_id = randint(1, 1000000000)
-                else:
-                    break
-            id_str = '{:0>10}'.format(new_id)
-            self.client_list.update({'id_str': 
-                                     s.gethostbyname(gethostname())})
-            id_assign = construct_message("ASN", new_id, id_str)
-            conn.send(self.pickle_message(id_assign))
-            uselist_string = ""
-            for key in self.client_list:
-                uselist_string = uselist_string + " " + key
-            uselist_message = construct_message("USR", uselist_string, id_str)
-            conn.send(self.pickle_message(uselist_message))
-            break"""
-        
+                    print("Sending new ID to user...")
+                    self.client_list[new_id] = (addr[0],self.host)
+                    wrapped_msg = construct_message(5, 0, 0, new_id, "")
+                    s.sendto(pickle.dumps(wrapped_msg), (addr))
+                    data, addr = s.recvfrom(65536)
+                    clientstring = ""
+                    for key in self.client_list:
+                        clientstring += ('{:0>10}'.format(key)+ " ")
+                    print("Sending client list to user...")
+                    wrapped_msg = construct_message(4, 0, 0, new_id, clientstring) 
+                    s.sendto(pickle.dumps(wrapped_msg), (addr))    
