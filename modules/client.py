@@ -55,7 +55,7 @@ class getThread (threading.thread):
         
 """
 class MessageClient():
-    def __init__(self, threadName, server):
+    def __init__(self, server):
         self.messages = []
         self.host = server
         self.mess_seq = 0
@@ -80,7 +80,7 @@ class MessageClient():
             if (continue_flag == 'n'):
                 break
     
-    def getThread(self, delay):
+    def getThread(self, threadName, delay):
         pass
     
     def activate(self):
