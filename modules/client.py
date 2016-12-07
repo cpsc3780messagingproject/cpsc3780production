@@ -86,21 +86,20 @@ class MessageClient():
         
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
-        while True:
-            if (self.id == 0):
-                wrapped_msg = construct_message(6, self.mess_seq, self.id, 0, "")
-                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                data, catchgarbage = s.recvfrom(65536)
-                unpickled_data = pickle.loads(data)
-                self.id = unpickled_data.destination
-                print("Your assigned ID is: ", self.id)
-                wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
-                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                data, catchgarbage = s.recvfrom(65536)
-                unpickled_data = pickle.loads(data)
-                wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
-                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                print("Userlist: ", unpickled_data.payload)
+        if (self.id == 0):
+            wrapped_msg = construct_message(6, self.mess_seq, self.id, 0, "")
+            s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+            data, catchgarbage = s.recvfrom(65536)
+            unpickled_data = pickle.loads(data)
+            self.id = unpickled_data.destination
+            print("Your assigned ID is: ", self.id)
+            wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
+            s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+            data, catchgarbage = s.recvfrom(65536)
+            unpickled_data = pickle.loads(data)
+            wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
+            s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+            print("Userlist: ", unpickled_data.payload)
                 
-            thread.start_new_thread(sendThread, ("Thread1", "this is bullshit", ))
-            thread.start_new_thread(getThread, ("Thread2", 3, ))
+        thread.start_new_thread(sendThread, ("Thread1", "this is bullshit", ))
+        thread.start_new_thread(getThread, ("Thread2", 3, ))
