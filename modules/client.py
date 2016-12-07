@@ -34,7 +34,7 @@ class sendThread (threading.thread):
                     s.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
                     data, garbagecatch = s.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
-                    if (unpickleld_data.type == 'ACK')
+                    if (unpickled_data.type == 'ACK')
                         break
                     else
                         time.sleep(1)
