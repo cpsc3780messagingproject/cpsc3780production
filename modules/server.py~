@@ -44,7 +44,6 @@ class MessageServer():
             print ("Connected by ", addr)
             unpickled_data = pickle.loads(data)
             print ("Client sent message: ", unpickled_data.payload)
-
         """while True:
             new_id = randint(1, 100000000)
             while True:
