@@ -80,9 +80,9 @@ class MessageClient():
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 print("Userlist: ", unpickled_data.payload)
                 
-            raw_msg = raw_input("Please input a message to transmit: ")
+            """raw_msg = raw_input("Please input a message to transmit: ")
             wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
-            s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+            s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))"""
             
             threadLock = threading.Lock()
             threads = []
