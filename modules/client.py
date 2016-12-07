@@ -11,14 +11,14 @@
 #       in client mode.
 ##############################################################################
 
-import threading
+import thread
 import time
 import socket
 import pickle
 from modules.message import Message
 from modules.message_factory import construct_message
 
-class sendThread (threading.thread):
+"""class sendThread (threading.thread):
     def __init__(self, clientsocket, server, sequence, id):
         self.clientsocket = clientsocket
         self.server = server
@@ -53,7 +53,7 @@ class getThread (threading.thread):
     def run(self):
         pass
         
-
+"""
 class MessageClient():
     def __init__(self, server):
         self.messages = []
@@ -80,21 +80,27 @@ class MessageClient():
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 print("Userlist: ", unpickled_data.payload)
                 
-            """raw_msg = raw_input("Please input a message to transmit: ")
+            thread.start_new_thread(sendThread())
+            thread.start_new_thread(getThread())
+            
+    def sendThread(self):
+        while True:
+            targ_id = raw_input("Please input the user to send to: ")
+            raw_msg = raw_input("Please input a message to transmit: ")
             wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
-            s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))"""
+            while True:
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                data, garbagecatch = s.recvfrom(65536)
+                unpickled_data = pickle.loads(data)
+                if (unpickled_data.type == 'ACK'):
+                    break
+                else:
+                    time.sleep(1)
             
-            threadLock = threading.Lock()
-            threads = []
-            
-            thread1 = sendThread(s, self.host, self.mess_seq, self.id)
-            thread2 = getThread(s, self.host, self.id)
-            
-            thread1.start()
-            thread2.start()
-            
-            threads.append(thread1)
-            threads.append(thread2)
-            
-            for t in threads:
-                t.join()
+            self.sequence = self.sequence + 1
+            continue_flag = raw_input("Send another message? (y/n)")
+            if (continue_flag == 'n'):
+                break
+    
+    def getThread(self):
+        pass
