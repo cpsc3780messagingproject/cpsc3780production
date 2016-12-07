@@ -42,5 +42,5 @@ class MessageClient():
         
         while True:
             raw_msg = raw_input("Please input a message to transmit: ")
-            wrapped_msg = construct_message("SND", self.mess_seq, self.id, 0, raw_msg) 
+            wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
