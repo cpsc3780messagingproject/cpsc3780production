@@ -102,5 +102,5 @@ class MessageClient():
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 print("Userlist: ", unpickled_data.payload)
                 
-            thread.start_new_thread(sendThread, ("Thread1", "this is bullshit"))
-            thread.start_new_thread(getThread, ("Thread2", 3))
+            thread.start_new_thread(sendThread, ("Thread1", "this is bullshit", ))
+            thread.start_new_thread(getThread, ("Thread2", 3, ))
