@@ -41,14 +41,18 @@ class MessageClient():
         
         while True:
             if (self.id == 0):
-                wrapped_msg = construct_message(5, self.mess_seq, self.id, 0, "")
+                wrapped_msg = construct_message(6, self.mess_seq, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 data = s.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 self.id = unpickled_data.destination
+                print("Your assigned ID is: ", unpickled_data.payload)
                 wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 data = s.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
+                wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 print(unpickled_data.payload)
                 
             raw_msg = raw_input("Please input a message to transmit: ")
