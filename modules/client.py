@@ -63,23 +63,23 @@ class MessageClient():
     
     def activate(self):
         def sendThread(threadName, flags):
-        while True:
-            targ_id = raw_input("Please input the user to send to: ")
-            raw_msg = raw_input("Please input a message to transmit: ")
-            wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
             while True:
-                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                data, garbagecatch = s.recvfrom(65536)
-                unpickled_data = pickle.loads(data)
-                if (unpickled_data.type == 'ACK'):
-                    break
-                else:
-                    time.sleep(1)
+                targ_id = raw_input("Please input the user to send to: ")
+                raw_msg = raw_input("Please input a message to transmit: ")
+                wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
+                while True:
+                    s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                    data, garbagecatch = s.recvfrom(65536)
+                    unpickled_data = pickle.loads(data)
+                    if (unpickled_data.type == 'ACK'):
+                        break
+                    else:
+                        time.sleep(1)
             
-            self.sequence = self.sequence + 1
-            continue_flag = raw_input("Send another message? (y/n)")
-            if (continue_flag == 'n'):
-                break
+                self.sequence = self.sequence + 1
+                continue_flag = raw_input("Send another message? (y/n)")
+                if (continue_flag == 'n'):
+                    break
     
         def getThread(threadName, delay):
             pass
