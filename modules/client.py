@@ -192,7 +192,7 @@ class MessageClient():
                     data, garbagecatch = s.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
                     print (unpickled_data.payload, "\n")
-                    if (unpickled_data.payload == "End of messages."):
+                    if (unpickled_data.type == "EOM"):
                         break
                     else:
                         print ("check2")
@@ -206,7 +206,7 @@ class MessageClient():
                 while True:
                     data, garbagecatch = s.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
-                    if (unpickled_data.payload == "End of messages."):
+                    if (unpickled_data.type == "EOM"):
                         break
                     else:
                         self.messages = (unpickled_data.seq, unpickled_data)
