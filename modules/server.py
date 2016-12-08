@@ -44,7 +44,7 @@ class MessageServer():
             self.lowerpeer = [peerinfo[1],peerinfo[2]]
             self.upperpeer = [peerinfo[3],peerinfo[4]]
             wrapped_msg = construct_message(0,0,0,0,"New peer;" + self.host + ";" + self.rank)
-            s.sendto(pickle.dumps(wrapped_msg), (self.lowerpeer[1], self.port))
+            s.sendto(pickle.dumps(wrapped_msg), (self.upperpeer[1], self.port))
             setup = False
         while True:
             data, addr = s.recvfrom(65536)
@@ -57,14 +57,16 @@ class MessageServer():
                     if (int(self.upperpeer[0]) > 0):
                         s.sendto(pickle.dumps(unpickled_data), (self.upperpeer[1], self.port))
 
-                    elif (int(self.upperpeer[0]) == 0):
-                        
-                        wrapped_msg = construct_message(0,0,0,0, str(int(self.rank)+1) + ";" + self.rank + ";" + self.host + ";" + self.upperpeer[0] + ";" + self.upperpeer[1])
+                    elif (int(self.upperpeer[0]) == 0):                        
+                        if (self.rank == "0"):
+                            wrapped_msg = construct_message(0,0,0,0, str(int(self.rank)+1) + ";" + self.rank + ";" + self.host + ";" + self.rank + ";" + self.host)
+                        else:    
+                            wrapped_msg = construct_message(0,0,0,0, str(int(self.rank)+1) + ";" + self.rank + ";" + self.host + ";" + self.upperpeer[0] + ";" + self.upperpeer[1])
                         s.sendto(pickle.dumps(wrapped_msg), (servmessage[1], self.port))
                         self.upperpeer = [str(int(self.rank)+1),servmessage[1]]
 
                 elif (servmessage[0] == "New peer"):
-                    self.lowerpeer[0] = [servmessage[1],servmessage[0]]  
+                    self.lowerpeer = [servmessage[2],servmessage[1]]
                 
                 elif (servmessage[0] == "Routed message"):
                     iterations = 0
@@ -74,17 +76,17 @@ class MessageServer():
                             index_tester = servmessage[2+(iterations*3)]
                         except IndexError:
                             break
-                        for key[x,y,z] in self.client_list:
+                        for key, (x,y,z) in self.client_list.iteritems():
                             if (key == servmessage[1+(iterations*3)]):
                                 if ((int(servmessage[2+(iterations*3)]) + 1) < key[1]):
                                     y = int(servmessage[2+(iterations*3)]) + 1  
                                     z = servmessage[3+(iterations*3)]
-                                if ((int(servmessage(2+iterations*3)) + 1) > highest_hops):
-                                    highest_hops = (int(servmessage(2+iterations*3)) + 1)
+                                if (int(servmessage(2+iterations*3)) > highest_hops):
+                                    highest_hops = (int(servmessage(2+iterations*3)))
                         iterations += 1
                     if (self.rank == "0" and highest_hops < (int(self.rank) + int(self.lowerpeer[0]))):                           
                         formatted_clientlist = "" 
-                        for key[x,y,z] in self.client_list:
+                        for key, (x,y,z) in self.client_list.iteritems():
                             formatted_clientlist += x + ";" + str(y) + ";" + z + ";"
                         wrapped_msg = construct_message(0,0,0,0,formatted_clientlist)
                         s.sendto(pickle.dumps(wrapped_msg), (self.lowerpeer[1], self.port))
@@ -135,7 +137,7 @@ class MessageServer():
                     s.sendto(pickle.dumps(wrapped_msg), (addr))  
                 else:
                     self.client_list[unpickled_data.source] = (addr[0], 0, self.host)
-                    formatted_clientlist = "" 
+                    formatted_clientlist = "Routed message;" 
                     for key, (x,y,z) in self.client_list.iteritems():
                         formatted_clientlist += x + ";" + str(y) + ";" + z + ";"
                     wrapped_msg = construct_message(0,0,0,0,formatted_clientlist)
