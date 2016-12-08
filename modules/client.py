@@ -84,10 +84,11 @@ class MessageClient():
         self.host = server
         self.mess_seq = 0
         self.id = 0
+        self.messages = ()
     
     def activate(self):
     
-        class sendThread (threading.Thread):
+"""        class sendThread (threading.Thread):
             def __init__(self, clientsocket, server, sequence, id):
                 threading.Thread.__init__(self)
                 self.clientsocket = clientsocket
@@ -111,12 +112,13 @@ class MessageClient():
                         else:
                             time.sleep(1)
                     threadLock.release()
+                    time.sleep(1)
                     self.sequence = self.sequence + 1
-            
                     threadLock.acquire()
                     continue_flag = raw_input("Continue sending messages? (y/n)")
                     if (continue_flag == 'n'):
                         exit_flag = True
+                        threadLock.release()
                         break
                     threadLock.release()
     
@@ -126,23 +128,25 @@ class MessageClient():
                 self.clientsocket = clientsocket
                 self.server = server
                 self.id = id
+                self.messages = []
         
             def run(self):
                 while True:
                     if (exit_flag == True):
                         break
-                    threadLock.acquire()
-                    print ("Receiving messages: \n")
-                    wrapped_msg = construct_message(2, 0, self.id, 0, "")
-                    self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
-                    while True:
-                        data, garbagecatch = self.clientsocket.recvfrom(65536)
-                        unpickled_data = pickle.loads(data)
-                        if (unpickled_data.payload() == ""):
-                            break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
-                        else:
-                            self.messages[unpickled.data.seq] = unpickled_data
-                    threadLock.release()
+                    if (get_blocker == True):
+                        pass
+                    else:
+                        print ("Receiving messages: \n")
+                        wrapped_msg = construct_message(2, 0, self.id, 0, "")
+                        self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                        while True:
+                            data, garbagecatch = self.clientsocket.recvfrom(65536)
+                            unpickled_data = pickle.loads(data)
+                            if (unpickled_data.payload() == ""):
+                                break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
+                            else:
+                                self.messages[unpickled.data.seq] = unpickled_data"""
         
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
@@ -162,20 +166,50 @@ class MessageClient():
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
             print("Userlist: ", unpickled_data.payload)
 
-        threadLock = threading.Lock()
-        threads = []
-        exit_flag = False
+            
+        while True:
+            targ_id = raw_input("Please input the user to send to: ")
+            raw_msg = raw_input("Please input a message to transmit: ")
+            wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
+            while True:
+                s.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                data, garbagecatch = self.clientsocket.recvfrom(65536)
+                unpickled_data = pickle.loads(data)
+                if (unpickled_data.type == 'ACK'):
+                    break
+                else:
+                    time.sleep(1)
+                    pass
+            self.mess_seq = self.mess_seq + 1
+            continue_flag = raw_input("Continue sending messages? (y/n/c to check messages)")
+            if (continue_flag == 'n'):
+                break
+            elif (continue_flag == 'c'):
+                print ("Receiving messages: ")
+                wrapped_msg = construct_message(2, 0, self.id, 0, "")
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                while True:
+                    data, garbagecatch = s.recvfrom(65536)
+                    unpickled_data = pickle.loads(data)
+                    if (unpickled_data.payload() == ""):
+                        break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
+                    else:
+                        self.messages[unpickled.data.seq] = unpickled_data
+                for key in self.messages
+                    print (self.messages[key].payload, "\n")
+            else:
+                print ("Receiving messages: ")
+                wrapped_msg = construct_message(2, 0, self.id, 0, "")
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                while True:
+                    data, garbagecatch = s.recvfrom(65536)
+                    unpickled_data = pickle.loads(data)
+                    if (unpickled_data.payload() == ""):
+                        break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
+                    else:
+                        self.messages[unpickled.data.seq] = unpickled_data
+                for key in self.messages
+                    print (self.messages[key].payload, "\n")
+            
 
-        senderThread = sendThread(s, self.host, self.mess_seq, self.id)
-        getterThread = getThread(s, self.host, self.id)
-
-        senderThread.start()
-        getterThread.start()
-        
-        threads.append(senderThread)
-        threads.append(getterThread)
-        
-        for t in threads:
-            t.join()
-        
         return
