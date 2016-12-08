@@ -52,7 +52,7 @@ class MessageClient():
                 if (unpickled_data.type == 'ACK'):
                     print (unpickled_data.payload)
                     break
-                else
+                else:
                     print (unpickled_data.payload)
             
             
