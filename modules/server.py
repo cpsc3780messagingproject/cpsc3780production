@@ -61,42 +61,38 @@ class MessageServer():
                 wrapped_msg = construct_message(9,0,0, unpickled_data.source, "")
                 s.sendto(pickle.dumps(wrapped_msg), (addr))
                 
-                    
+            elif (unpickled_data.type == 'USR'):
+                clientstring = ""
+                for key in self.client_list:
+                    clientstring += key + ", "
+                print("Sending client list to user...")
+                wrapped_msg = construct_message(4, 0, 0, unpickled_data.source, clientstring) 
+                s.sendto(pickle.dumps(wrapped_msg), (addr))
+
 #            elif (unpickled_data.type == 'ACK'):
             #forward ack from client A to client B
                 
-            elif (unpickled_data.type == 'IDR'): 
-                exists = (False, 0)       
+            elif (unpickled_data.type == 'IDS'): 
+                exists = False
+                taken = False       
                 for key, (valx, _) in self.client_list.iteritems():  
-                    if (valx == addr[0]):
-                        exists = (True, key)
-                        break
-                    else:
-                        exists = (False, 0)
-                if (exists[0] == True):   
-                    new_id = exists[1]
-                else:
-                    new_id = random.randint(1, 100000000)  
-                    while True:
-                        if (new_id in self.client_list):
-                            new_id = randint(1, 1000000000)
-                        else:
+                    if (key == unpickled_data.source):
+                        if (valx == addr[0]):
+                            exists = True
                             break
-                print("Sending new ID to user...")
-                stringid = ('{:0>10}'.format(new_id))
-                self.client_list[stringid] = (addr[0],self.host)
-                wrapped_msg = construct_message(5, 0, 0, stringid, "Welcome, user!")
-                s.sendto(pickle.dumps(wrapped_msg), (addr))
-                data, addr = s.recvfrom(65536)
-                clientstring = ""
-                for key in self.client_list:
-                    clientstring += ('{:0>10}'.format(key)+ " ")
-                print("Sending client list to user...")
-                wrapped_msg = construct_message(4, 0, 0, stringid, clientstring) 
-                s.sendto(pickle.dumps(wrapped_msg), (addr))   
+                        else:
+                            taken = True
+                            break
+                if (exists == True):   
+                    wrapped_msg = construct_message(3,0,0, unpickled_data.source, "Welcome back, " + unpickled_data.source + "!")
+                    s.sendto(pickle.dumps(wrapped_msg), (addr))
+                elif(taken == True):
+                    wrapped_msg = construct_message(6,0,0, unpickled_data.source, "Handle taken! Try again.")
+                    s.sendto(pickle.dumps(wrapped_msg), (addr))  
+                else:
+                    self.client_list[unpickled_data.source] = (addr[0], self.host)
+                    wrapped_msg = construct_message(3,0,0, unpickled_data.source, "Welcome, " + unpickled_data.source + "!")
+                    s.sendto(pickle.dumps(wrapped_msg), (addr))
 
-
-
-
-
+   
  

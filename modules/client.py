@@ -64,7 +64,6 @@ class MessageClient():
             wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
             print("Userlist: ", unpickled_data.payload)
-
             
         while True:
             action_flag = raw_input("Please choose an action [s to send, c to check messages, e to exit]: ")
