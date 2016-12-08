@@ -15,26 +15,42 @@
 #       y
 #       z
 ##############################################################################
+import socket
+import fcntl
+import struct
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
+ip = get_ip_address('eth0')
+print("Your IP is " + ip)
+############################################# Find and print user's IP #######
 
 import time
 from modules.message import Message
 from modules.server import MessageServer
 from modules.client import MessageClient
 
-while True:
-    mode = raw_input("Run in server mode? [y/n]")
-    if (mode == "y"):
-        print("Running in server mode.")
-        #net_serv = input("Please enter the IP address of at least one other 
-        #                  server on desired network (0 to run as a sole 
-        #                  server)."
-        seiren_server = MessageServer(5000)
-        seiren_server.activate()
-        
-        # Run in server mode. Probably fairly lightweight code.
 
-        # Construct new MessageServer() object.
-        
+#################### Take user input for server/client mode ##################
+while True:
+    mode = raw_input("Run in server mode? [y/n]: ")
+    if (mode == "y"):        
+        print("Running in server mode.")
+        #net_serv = raw_input("Please enter the IP address of at least one other 
+        #                  server (or enter 0 to run as a root 
+        #                  server): "
+        #if (net_serv != "0"):
+        #seiren_server = MessageServer(5000)
+        #seiren_server.activate(net_serv)
+        #elif(net_serv == "0"):      
+        seiren_server = MessageServer(5000, get_ip_address('eth0'))  # Construct new MessageServer() object.
+        seiren_server.activate()
+
         break
 
     if (mode == "n"):

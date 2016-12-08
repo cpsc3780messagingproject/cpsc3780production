@@ -19,8 +19,8 @@ from modules.message import Message
 from modules.message_factory import construct_message
 
 class MessageServer():
-    def __init__(self, port):
-        self.host = '142.66.140.69'
+    def __init__(self, port, ip):
+        self.host = ip
         self.port = port
         self.rank = 0                       # Rank is used to determine which
                                             # other server the server should
@@ -51,19 +51,19 @@ class MessageServer():
                 s.sendto(pickle.dumps(wrapped_msg), (addr))
 
             elif (unpickled_data.type == 'GET'):
-                print("test-1")
-                while True:
-                    print("test0")
-                    if (self.messages.index(unpickled_data.source) == True):
-                        print("test1")
-                        message = self.messages.pop([self.messages.index(unpickled_data.source)])
-                        print (message)
+                for x in self.messages:
+                    print (x.destination)
+                    if (x.destination == unpickled_data.source):
+                        message = self.messages.pop(self.messages.index(x))
+                        messagedest = self.client_list[message.destination]
+                        s.sendto(pickle.dumps(message), (addr))
                         data, addr = s.recvfrom(65536)
-                    else:
-                        break
+                wrapped_msg = construct_message(9,0,0, unpickled_data.source, "")
+                s.sendto(pickle.dumps(wrapped_msg), (addr))
                 
+                    
 #            elif (unpickled_data.type == 'ACK'):
-            #forward message from client A to client B
+            #forward ack from client A to client B
                 
             elif (unpickled_data.type == 'IDR'): 
                 exists = (False, 0)       
@@ -83,13 +83,20 @@ class MessageServer():
                         else:
                             break
                 print("Sending new ID to user...")
-                self.client_list[new_id] = (addr[0],self.host)
-                wrapped_msg = construct_message(5, 0, 0, new_id, "Welcome, user!")
+                stringid = ('{:0>10}'.format(new_id))
+                self.client_list[stringid] = (addr[0],self.host)
+                wrapped_msg = construct_message(5, 0, 0, stringid, "Welcome, user!")
                 s.sendto(pickle.dumps(wrapped_msg), (addr))
                 data, addr = s.recvfrom(65536)
                 clientstring = ""
                 for key in self.client_list:
                     clientstring += ('{:0>10}'.format(key)+ " ")
                 print("Sending client list to user...")
-                wrapped_msg = construct_message(4, 0, 0, new_id, clientstring) 
-                s.sendto(pickle.dumps(wrapped_msg), (addr))    
+                wrapped_msg = construct_message(4, 0, 0, stringid, clientstring) 
+                s.sendto(pickle.dumps(wrapped_msg), (addr))   
+
+
+
+
+
+ 
