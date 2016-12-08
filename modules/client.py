@@ -200,7 +200,7 @@ class MessageClient():
                         print ("check2")
                         self.messages = (unpickled_data.seq, unpickled_data)
                 for x in self.messages:
-                    print (x[1], "\n")
+                    print (x[1].payload, "\n")
             else:
                 print ("Receiving messages: ")
                 wrapped_msg = construct_message(2, 0, self.id, 0, "")
@@ -215,7 +215,7 @@ class MessageClient():
                     else:
                         self.messages = (unpickled_data.seq, unpickled_data)
                 for x in self.messages:
-                    print (x[1], "\n")
+                    print (x[1].payload, "\n")
             
 
         return
