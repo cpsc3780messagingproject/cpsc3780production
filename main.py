@@ -15,6 +15,7 @@
 #       y
 #       z
 ##############################################################################
+
 import socket
 import fcntl
 import struct
@@ -28,6 +29,7 @@ def get_ip_address(ifname):
     )[20:24])
 ip = get_ip_address('eth0')
 print("Your IP is " + ip)
+
 ############################################# Find and print user's IP #######
 
 import time

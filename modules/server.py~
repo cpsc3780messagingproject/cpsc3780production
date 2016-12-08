@@ -22,13 +22,10 @@ class MessageServer():
     def __init__(self, port, ip):
         self.host = ip
         self.port = port
-        self.rank = 0                       # Rank is used to determine which
-        self.peerlist = []                  # other server the server should
-                                            # talk to when updating client
-                                            # lists. While it always starts at
-                                            # 0, upon hooking a server into a
-                                            # network, it will slot itself
-                                            # into the highest open rank. 
+        self.rank = '0'
+                        
+        self.upperpeer = ['0', ""]
+        self.lowerpeer = ['0', ""]                                      
         self.client_list = {}
         self.messages = []
 
@@ -36,16 +33,27 @@ class MessageServer():
     def activate(self, peer):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.bind((self.host, self.port))
-        if (peer != 0):
-            wrapped_msg = construct_message(0,0,0,0,"Requesting access;")          
-            s.sendto(pickle.dumps(wrapped_msg), (peer, port))
+        setup = True
+        print("0")
+        if (peer != '0' and setup == True):
+            print("1")
+            wrapped_msg = construct_message(0,0,0,0,"Requesting access;" + self.host)          
+            s.sendto(pickle.dumps(wrapped_msg), (peer, self.port))
+            print("2")
             data, addr = s.recvfrom(65536)
+            print("3")
             unpickled_data = pickle.loads(data)
+            print("5")
             peerinfo = unpickled_data.payload.split(";")
+            print("6")
             self.rank = peerinfo[0]
-            self.peerlist.append(peerinfo[1],peerinfo[2])
-            self.peerlist.append(peerinfo[3],peerinfo[4])
+            self.lowerpeer = [peerinfo[1],peerinfo[2]]
+            self.upperpeer = [peerinfo[3],peerinfo[4]]
+            print(7)
             wrapped_msg = construct_message(0,0,0,0,"New peer;" + self.host + ";" + self.rank)
+            s.sendto(pickle.dumps(wrapped_msg), (self.lowerpeer[1], self.port))
+            setup = False
+            print("4")
         while True:
             data, addr = s.recvfrom(65536)
             print ("Connected by ", addr)
@@ -53,10 +61,24 @@ class MessageServer():
             print ("Client sent ", unpickled_data.type, unpickled_data.payload)
             if (unpickled_data.type == 'SRV'):  
                 servmessage = unpickled_data.payload.split(";")
-                   
-                if (servmessage[0] == "Requesting access")
-                elif (servmessage[0] == "New peer")
+                if (servmessage[0] == "Requesting access"):
+                    if (int(self.upperpeer[0]) > 0):
+                        s.sendto(pickle.dumps(unpickled_data), (self.upperpeer[1], self.port))
 
+                    elif (int(self.upperpeer[0]) == 0):
+                        
+                        wrapped_msg = construct_message(0,0,0,0, str(int(self.rank)+1) + ";" + self.rank + ";" + self.host + ";" + self.upperpeer[0] + ";" + self.upperpeer[1])
+                        s.sendto(pickle.dumps(wrapped_msg), (servmessage[1], self.port))
+                        self.upperpeer = [str(int(self.rank)+1),servmessage[1]]
+
+                elif (servmessage[0] == "New peer"):
+                    self.lowerpeer[0] = [servmessage[1],servmessage[0]]  
+                
+                elif (servmessage[0] == "Routed message"):
+                    for key in self.client_list:
+                        if (key == servmessage[1]):
+                            if (servmessage[2] <  
+  
             elif (unpickled_data.type == 'SND'):
                 self.messages.append(unpickled_data)
                 wrapped_msg = construct_message(3,0,0,unpickled_data.source, "Message received!")
@@ -102,7 +124,7 @@ class MessageServer():
                     wrapped_msg = construct_message(6,0,0, unpickled_data.source, "Handle taken! Try again.")
                     s.sendto(pickle.dumps(wrapped_msg), (addr))  
                 else:
-                    self.client_list[unpickled_data.source] = (addr[0], self.host)
+                    self.client_list[unpickled_data.source] = (addr[0], 0, self.host)
                     wrapped_msg = construct_message(3,0,0, unpickled_data.source, "Welcome, " + unpickled_data.source + "!")
                     s.sendto(pickle.dumps(wrapped_msg), (addr))
 
