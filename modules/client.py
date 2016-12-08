@@ -172,7 +172,7 @@ class MessageClient():
             wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
             while True:
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                data, garbagecatch = self.clientsocket.recvfrom(65536)
+                data, garbagecatch = s.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 if (unpickled_data.type == 'ACK'):
                     break
