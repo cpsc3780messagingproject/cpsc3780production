@@ -67,21 +67,23 @@ class MessageClient():
 
             
         while True:
-            targ_id = raw_input("Please input the user to send to: ")
-            raw_msg = raw_input("Please input a message to transmit: ")
-            wrapped_msg = construct_message(1, self.mess_seq, self.id, targ_id, raw_msg) 
-            while True:
-                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                data, garbagecatch = s.recvfrom(65536)
-                unpickled_data = pickle.loads(data)
-                if (unpickled_data.type == 'ACK'):
-                    break
-                else:
-                    time.sleep(1)
-                    pass
-            self.mess_seq = self.mess_seq + 1
-            continue_flag = raw_input("Continue sending messages? (y/n/c to check messages)")
-            if (continue_flag == 'n'):
+            action_flag = raw_input("Please choose an action [s to send, c to check messages, e to exit]: ")
+            if (action_flag == 's'):
+                targ_id = raw_input("Please input the user to send to: ")
+                raw_msg = raw_input("Please input a message to transmit: ")
+                wrapped_msg = construct_message(1, self.mess_seq, self.id, targ_id, raw_msg) 
+                while True:
+                    s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                    data, garbagecatch = s.recvfrom(65536)
+                    unpickled_data = pickle.loads(data)
+                    if (unpickled_data.type == 'ACK'):
+                        break
+                    else:
+                        time.sleep(1)
+                        pass
+                self.mess_seq = self.mess_seq + 1
+            elif (action_flag == 'n'):
+                print("Signing off. Have a nice day!")
                 break
             elif (continue_flag == 'c'):
                 print ("Receiving messages: ")
@@ -96,18 +98,5 @@ class MessageClient():
                         break
                     else:
                         print (unpickled_data.source, " has sent:", unpickled_data.payload)
-            else:
-                print ("Receiving messages: ")
-                wrapped_msg = construct_message(2, 0, self.id, 0, "")
-                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                while True:
-                    data, garbagecatch = s.recvfrom(65536)
-                    unpickled_data = pickle.loads(data)
-                    wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
-                    s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                    if (unpickled_data.type == "EOM"):
-                        break
-                    else:
-                        print (unpickled_data.source, " has sent:", unpickled_data.payload)
-
+                        
         return
