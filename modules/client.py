@@ -87,7 +87,6 @@ class MessageClient():
         self.messages = ()
     
     def activate(self):
-    
 """        class sendThread (threading.Thread):
             def __init__(self, clientsocket, server, sequence, id):
                 threading.Thread.__init__(self)
