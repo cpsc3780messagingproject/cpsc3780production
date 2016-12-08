@@ -129,7 +129,7 @@ class MessageClient():
         
             def run(self):
                 while True:
-                    if (exit_flag == False):
+                    if (exit_flag == True):
                         break
                     threadLock.acquire()
                     print ("Receiving messages: \n")
