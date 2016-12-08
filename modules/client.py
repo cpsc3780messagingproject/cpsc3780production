@@ -62,12 +62,15 @@ class getThread (threading.Thread):
         
     def run(self):
         while True:
+            print ("check0")
             time.sleep(3)
+            print ("check1")
             self.lock.acquire()
             print ("Receiving messages: \n")
             wrapped_msg = construct_message(2, 0, self.id, 0, "")
+            self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+            print ("check2")
             while True:
-                self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
                 data, garbagecatch = self.clientsocket.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 if (unpickled_data.payload() == ""):
