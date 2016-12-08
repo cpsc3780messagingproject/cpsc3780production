@@ -18,15 +18,15 @@ def construct_message(message_type, sequence, senderid, targetid, message):
         1:      'SND', #used to send a message to server
         2:      'GET', #used to receive all messages from server
         3:      'ACK', #used to acknowledge receipt of messages
-        4:      'USR', #indicates a server is sending a client a userlist
-        5:      'ASN', #server is assigning a value to a client
-        6:      'IDR', #client is first connecting; requesting id
-        9:      'EOM' #server is sending end of messages flag
+        4:      'USR', #used for userlist transactions
+        5:      'ASN', #server is assigning a value to a client - deprecated
+        6:      'IDS', #client is first connecting; submitting id
+        9:      'EOM'  #server is sending end of messages flag
         }
         seq_str = '{:0>3}'.format(sequence)
-        id_str = '{:0>10}'.format(senderid)
-        target_str = '{:0>10}'.format(targetid)
+        #id_str = '{:0>10}'.format(senderid)
+        #target_str = '{:0>10}'.format(targetid)
         
-        new_message = Message(seq_str, MESSAGE_TYPES[message_type], id_str, target_str, 
+        new_message = Message(seq_str, MESSAGE_TYPES[message_type], senderid, targetid, 
                               message)
         return new_message
