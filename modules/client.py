@@ -85,7 +85,7 @@ class MessageClient():
             elif (action_flag == 'n'):
                 print("Signing off. Have a nice day!")
                 break
-            elif (continue_flag == 'c'):
+            elif (action_flag == 'c'):
                 print ("Receiving messages: ")
                 wrapped_msg = construct_message(2, 0, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
