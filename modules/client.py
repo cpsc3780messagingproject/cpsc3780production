@@ -114,10 +114,10 @@ class MessageClient():
                     self.sequence = self.sequence + 1
             
                     threadLock.acquire()
-                    continue_flag = raw_input("Send another message? (y/n)")
+                    continue_flag = raw_input("Continue sending messages? (y/n)")
                     if (continue_flag == 'n'):
+                        exit_flag = True
                         break
-
                     threadLock.release()
     
         class getThread (threading.Thread):
@@ -129,7 +129,8 @@ class MessageClient():
         
             def run(self):
                 while True:
-                    time.sleep(3)
+                    if (exit_flag == False):
+                        break
                     threadLock.acquire()
                     print ("Receiving messages: \n")
                     wrapped_msg = construct_message(2, 0, self.id, 0, "")
@@ -163,10 +164,10 @@ class MessageClient():
 
         threadLock = threading.Lock()
         threads = []
+        exit_flag = False
 
         senderThread = sendThread(s, self.host, self.mess_seq, self.id)
         getterThread = getThread(s, self.host, self.id)
-        getterThread.daemon = True
 
         senderThread.start()
         getterThread.start()
@@ -176,3 +177,5 @@ class MessageClient():
         
         for t in threads:
             t.join()
+        
+        return
