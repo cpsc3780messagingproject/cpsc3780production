@@ -188,19 +188,14 @@ class MessageClient():
                 wrapped_msg = construct_message(2, 0, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 while True:
-                    print ("check1 \n")
                     data, garbagecatch = s.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
                     wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
                     s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                    print (unpickled_data.payload, "\n")
                     if (unpickled_data.type == "EOM"):
                         break
                     else:
-                        print ("check2")
-                        self.messages = (unpickled_data.seq, unpickled_data)
-                for x in self.messages:
-                    print (x[1].payload, "\n")
+                        print (unpickled_data.source, " has sent:", unpickled_data.payload)
             else:
                 print ("Receiving messages: ")
                 wrapped_msg = construct_message(2, 0, self.id, 0, "")
@@ -213,9 +208,6 @@ class MessageClient():
                     if (unpickled_data.type == "EOM"):
                         break
                     else:
-                        self.messages = (unpickled_data.seq, unpickled_data)
-                for x in self.messages:
-                    print (x[1].payload, "\n")
-            
+                        print (unpickled_data.source, " has sent:", unpickled_data.payload)
 
         return
