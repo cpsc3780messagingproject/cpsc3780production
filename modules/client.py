@@ -203,8 +203,8 @@ class MessageClient():
                 while True:
                     data, garbagecatch = s.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
-                    if (unpickled_data.payload() == ""):
-                        break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
+                    if (unpickled_data.payload() == "End of messages."):
+                        break
                     else:
                         self.messages[unpickled.data.seq] = unpickled_data
                 for key in self.messages:
