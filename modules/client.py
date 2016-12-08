@@ -18,7 +18,7 @@ from modules.message import Message
 from modules.message_factory import construct_message
 import threading
 
-class sendThread (threading.Thread):
+"""class sendThread (threading.Thread):
     def __init__(self, clientsocket, server, sequence, id, lock):
         threading.Thread.__init__(self)
         self.clientsocket = clientsocket
@@ -77,7 +77,7 @@ class getThread (threading.Thread):
                     break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
                 else:
                     self.messages[unpickled.data.seq] = unpickled_data
-            self.lock.release()
+            self.lock.release()"""
         
 class MessageClient():
     def __init__(self, server):
@@ -85,29 +85,66 @@ class MessageClient():
         self.mess_seq = 0
         self.id = 0
     
-    def activate(self):
-        """def sendThread(threadName, flags):
-            print ("check")
+    class sendThread (threading.Thread):
+        def __init__(self, clientsocket, server, sequence, id):
+            threading.Thread.__init__(self)
+            self.clientsocket = clientsocket
+            self.server = server
+            self.sequence = sequence
+            self.id = id
+            self.messages = {}
+        
+        def run(self):
             while True:
+                threadLock.acquire()
                 targ_id = raw_input("Please input the user to send to: ")
                 raw_msg = raw_input("Please input a message to transmit: ")
-                wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
+                wrapped_msg = construct_message(1, self.sequence, self.id, 0, raw_msg) 
                 while True:
-                    s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-                    data, garbagecatch = s.recvfrom(65536)
+                    self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                    data, garbagecatch = self.clientsocket.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
                     if (unpickled_data.type == 'ACK'):
                         break
                     else:
                         time.sleep(1)
-            
+                threadLock.release()
                 self.sequence = self.sequence + 1
+            
+                threadLock.acquire()
                 continue_flag = raw_input("Send another message? (y/n)")
                 if (continue_flag == 'n'):
                     break
+
+                threadLock.release()
     
-        def getThread(threadName, delay):
-            pass"""
+    class getThread (threading.Thread):
+        def __init__(self, clientsocket, server, id):
+            threading.Thread.__init__(self)
+            self.clientsocket = clientsocket
+            self.server = server
+            self.id = id
+        
+        def run(self):
+            while True:
+                print ("check0")
+                time.sleep(3)
+                threadLock.acquire()
+                print ("Receiving messages: \n")
+                wrapped_msg = construct_message(2, 0, self.id, 0, "")
+                self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                print ("check0")
+                while True:
+                    data, garbagecatch = self.clientsocket.recvfrom(65536)
+                    unpickled_data = pickle.loads(data)
+                    if (unpickled_data.payload() == ""):
+                        break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
+                    else:
+                        self.messages[unpickled.data.seq] = unpickled_data
+                threadLock.release()
+
+    
+    def activate(self):
         
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
@@ -125,15 +162,13 @@ class MessageClient():
             wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
             print("Userlist: ", unpickled_data.payload)
-                
-        """thread.start_new_thread(sendThread, ("Thread1", "this is bullshit", ))
-        thread.start_new_thread(getThread, ("Thread2", 3, ))"""
 
         threadLock = threading.Lock()
         threads = []
 
         senderThread = sendThread(s, self.host, self.mess_seq, self.id, threadLock)
         getterThread = getThread(s, self.host, self.id, threadLock)
+        getterThread.daemon = True
 
         senderThread.start()
         getterThread.start()
