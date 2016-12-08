@@ -41,6 +41,8 @@ from modules.client import MessageClient
 #################### Take user input for server/client mode ##################
 while True:
     mode = raw_input("Run in server mode? [y/n]: ")
+##############################################################################
+#################### Run in server mode ######################################
     if (mode == "y"):        
         print("Running in server mode.")
         net_serv = raw_input("Please enter the IP address of at least one other "
@@ -51,7 +53,8 @@ while True:
         seiren_server.activate(net_serv)
 
         break
-
+##############################################################################
+#################### Run in client mode ######################################
     if (mode == "n"):
         print("Running in client mode.")
         hostname = raw_input("Input the IP address of the desired server: ")
@@ -61,14 +64,8 @@ while True:
         seiren_client = MessageClient(hostname)
         seiren_client.activate()
         
-        #Receive userlist from server upon connecting.
-        #Get input from user, conver to message.
-        #Send message. Wait for response x time - if no ACK, resend message.\
-        #Block until ACK received.
-        #Every x seconds, send GET to receive all messages.
-        #This SHOULD be basically all the client needs to do.
-        
         break
+##############################################################################
     else:
         print ("Unrecognized input.")
 
