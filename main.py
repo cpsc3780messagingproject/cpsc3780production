@@ -15,7 +15,6 @@
 #       y
 #       z
 ##############################################################################
-
 import socket
 import fcntl
 import struct
@@ -29,8 +28,11 @@ def get_ip_address(ifname):
     )[20:24])
 ip = get_ip_address('eth0')
 
-############################################# Find and print user's IP #######
 
+############################################# Find and print user's IP #######
+import socket
+import fcntl
+import struct
 import time
 from modules.message import Message
 from modules.server import MessageServer
@@ -40,6 +42,26 @@ from modules.client import MessageClient
 #################### Take user input for server/client mode ##################
 while True:
     print "Welcome to Seiren!"
+    ip = ""
+    while True:
+        os = raw_input("What is your operating system? U for Unix, W for Windows: ")
+        if (os == 'U'):
+            
+
+            def get_ip_address(ifname):
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                return socket.inet_ntoa(fcntl.ioctl(
+                    s.fileno(),
+                    0x8915,  # SIOCGIFADDR
+                    struct.pack('256s', ifname[:15])
+                )[20:24])
+            ip = get_ip_address('eth0')
+            break
+        elif (os == "W"):
+            print("Oh. I hadn't planned for that yet.")
+        else:
+            print("Invalid input. Try again.")
+           
     print ("Your IP is " + ip)
     mode = raw_input("Run in server mode? [y/n]: ")
 ##############################################################################
