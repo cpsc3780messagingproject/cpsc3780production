@@ -127,13 +127,11 @@ class MessageClient():
         
         def run(self):
             while True:
-                print ("check0")
                 time.sleep(3)
                 threadLock.acquire()
                 print ("Receiving messages: \n")
                 wrapped_msg = construct_message(2, 0, self.id, 0, "")
                 self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
-                print ("check0")
                 while True:
                     data, garbagecatch = self.clientsocket.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
@@ -153,6 +151,7 @@ class MessageClient():
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
             data, catchgarbage = s.recvfrom(65536)
             unpickled_data = pickle.loads(data)
+            print (unpickled_data.payload, "/n")
             self.id = unpickled_data.destination
             print("Your assigned ID is: ", self.id)
             wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
