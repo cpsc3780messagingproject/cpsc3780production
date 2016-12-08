@@ -188,11 +188,14 @@ class MessageClient():
                 wrapped_msg = construct_message(2, 0, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 while True:
+                    print ("check1 \n")
                     data, garbagecatch = s.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
+                    print (unpickled_data.payload, "\n")
                     if (unpickled_data.payload == "End of messages."):
-                        break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
+                        break
                     else:
+                        print ("check2")
                         self.messages = (unpickled_data.seq, unpickled_data)
                 for x in self.messages:
                     print (x[1], "\n")
