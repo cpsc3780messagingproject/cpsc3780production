@@ -1,3 +1,15 @@
+##############################################################################
+# Seiren : Simple Python Messaging Network
+# CPSC 3780 Project
+# Authors: Tyler Bertram, Jarvis Zazalack
+#   A simple, object-oriented and dynamically-constructed messaging network
+#   using UDP to pass message strings while handling small-scale routing
+#   between multiple networks.
+#
+#   message_factory.py:
+#       Function for creating message objects, used in multiple places.
+##############################################################################
+
 from modules.message import Message
 
 def construct_message(message_type, sequence, senderid, targetid, message):

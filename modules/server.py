@@ -20,7 +20,7 @@ from modules.message_factory import construct_message
 
 class MessageServer():
     def __init__(self, port):
-        self.host = '142.66.140.69'
+        self.host = '127.0.0.1'
         self.port = port
         self.rank = 0                       # Rank is used to determine which
                                             # other server the server should

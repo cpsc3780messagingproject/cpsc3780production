@@ -23,7 +23,7 @@ from modules.client import MessageClient
 
 while True:
     mode = raw_input("Run in server mode? [y/n]")
-    if mode is "y":
+    if (mode == "y"):
         print("Running in server mode.")
         #net_serv = input("Please enter the IP address of at least one other 
         #                  server on desired network (0 to run as a sole 
@@ -37,7 +37,7 @@ while True:
         
         break
 
-    if mode is "n":
+    if (mode == "n"):
         print("Running in client mode.")
         hostname = raw_input("Input the IP address of the desired server: ")
         # Run in client mode. Takes inputs, sends messages. More complicated.
@@ -54,5 +54,7 @@ while True:
         #This SHOULD be basically all the client needs to do.
         
         break
+    else:
+        print ("Unrecognized input.")
 
 exit()

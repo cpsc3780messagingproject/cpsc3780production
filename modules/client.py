@@ -11,58 +11,79 @@
 #       in client mode.
 ##############################################################################
 
-import thread
 import time
 import socket
 import pickle
 from modules.message import Message
 from modules.message_factory import construct_message
+import threading
 
-"""class sendThread (threading.thread):
-    def __init__(self, clientsocket, server, sequence, id):
+class sendThread (threading.Thread):
+    def __init__(self, clientsocket, server, sequence, id, lock):
+        threading.Thread.__init__(self)
         self.clientsocket = clientsocket
         self.server = server
         self.sequence = sequence
         self.id = id
+        self.lock = lock
+        self.messages = {}
         
     def run(self):
             while True:
+                self.lock.acquire()
                 targ_id = raw_input("Please input the user to send to: ")
                 raw_msg = raw_input("Please input a message to transmit: ")
                 wrapped_msg = construct_message(1, self.sequence, self.id, 0, raw_msg) 
                 while True:
-                    s.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
-                    data, garbagecatch = s.recvfrom(65536)
+                    self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                    data, garbagecatch = self.clientsocket.recvfrom(65536)
                     unpickled_data = pickle.loads(data)
                     if (unpickled_data.type == 'ACK'):
                         break
                     else:
                         time.sleep(1)
-                
+                self.lock.release()
                 self.sequence = self.sequence + 1
+                
+                self.lock.acquire()
                 continue_flag = raw_input("Send another message? (y/n)")
                 if (continue_flag == 'n'):
                     break
+
+                self.lock.release()
     
-class getThread (threading.thread):
-    def __init__(self, clientsocket, server, id):
+class getThread (threading.Thread):
+    def __init__(self, clientsocket, server, id, lock):
+        threading.Thread.__init__(self)
         self.clientsocket = clientsocket
         self.server = server
         self.id = id
+        self.lock = lock
         
     def run(self):
-        pass
+        while True:
+            time.sleep(3)
+            self.lock.acquire()
+            print ("Receiving messages: \n")
+            wrapped_msg = construct_message(2, 0, self.id, 0, "")
+            while True:
+                self.clientsocket.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                data, garbagecatch = self.clientsocket.recvfrom(65536)
+                unpickled_data = pickle.loads(data)
+                if (unpickled_data.payload() == ""):
+                    break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
+                else:
+                    self.messages[unpickled.data.seq] = unpickled_data
+            self.lock.release()
         
-"""
 class MessageClient():
     def __init__(self, server):
-        self.messages = []
         self.host = server
         self.mess_seq = 0
         self.id = 0
     
     def activate(self):
-        def sendThread(threadName, flags):
+        """def sendThread(threadName, flags):
             print ("check")
             while True:
                 targ_id = raw_input("Please input the user to send to: ")
@@ -83,7 +104,7 @@ class MessageClient():
                     break
     
         def getThread(threadName, delay):
-            pass
+            pass"""
         
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
@@ -102,5 +123,20 @@ class MessageClient():
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
             print("Userlist: ", unpickled_data.payload)
                 
-        thread.start_new_thread(sendThread, ("Thread1", "this is bullshit", ))
-        thread.start_new_thread(getThread, ("Thread2", 3, ))
+        """thread.start_new_thread(sendThread, ("Thread1", "this is bullshit", ))
+        thread.start_new_thread(getThread, ("Thread2", 3, ))"""
+
+        threadLock = threading.Lock()
+        threads = []
+
+        senderThread = sendThread(s, self.host, self.mess_seq, self.id, threadLock)
+        getterThread = getThread(s, self.host, self.id, threadLock)
+
+        senderThread.start()
+        getterThread.start()
+        
+        threads.append(senderThread)
+        threads.append(getterThread)
+        
+        for t in threads:
+            t.join()
