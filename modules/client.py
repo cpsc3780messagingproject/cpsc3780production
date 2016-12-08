@@ -193,7 +193,7 @@ class MessageClient():
                     if (unpickled_data.payload == ""):
                         break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
                     else:
-                        self.messages[unpickled.data.seq] = unpickled_data
+                        self.messages[unpickled_data.seq] = unpickled_data
                 for key in self.messages:
                     print (self.messages[key].payload, "\n")
             else:
@@ -206,7 +206,7 @@ class MessageClient():
                     if (unpickled_data.payload == "End of messages."):
                         break
                     else:
-                        self.messages[unpickled.data.seq] = unpickled_data
+                        self.messages[unpickled_data.seq] = unpickled_data
                 for key in self.messages:
                     print (self.messages[key].payload, "\n")
             
