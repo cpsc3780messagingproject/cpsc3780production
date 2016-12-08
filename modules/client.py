@@ -30,19 +30,13 @@ class MessageClient():
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
         if (self.id == 0):
-            """wrapped_msg = construct_message(6, self.mess_seq, self.id, 0, "")
-            s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-            data, catchgarbage = s.recvfrom(65536)
-            unpickled_data = pickle.loads(data)
-            print (unpickled_data.payload, "/n")
-            self.id = unpickled_data.destination
-            print("Your assigned ID is: ", self.id)"""
             while True:
                 while True:
                     self.id = raw_input("Please input a handle (max 10 characters): ")
                     if (len(self.id) > 10):
-                        print ("Handle is too long. Please choose another handle.")
+                        print "Handle is too long. Please choose another handle."
                     else:
+                        print "Your ID is: ", self.id
                         break
                 wrapped_msg = construct_message(6, 0, self.id, 0, "")
                 s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
@@ -63,10 +57,10 @@ class MessageClient():
             unpickled_data = pickle.loads(data)
             wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
             s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
-            print("Userlist: ", unpickled_data.payload)
+            print "Userlist: ", unpickled_data.payload
             
         while True:
-            action_flag = raw_input("Please choose an action [s to send, c to check messages, e to exit]: ")
+            action_flag = raw_input("Please choose an action [s to send, c to check messages, u to get userlist, e to exit]: ")
             if (action_flag == 's'):
                 targ_id = raw_input("Please input the user to send to: ")
                 raw_msg = raw_input("Please input a message to transmit: ")
@@ -82,7 +76,7 @@ class MessageClient():
                         pass
                 self.mess_seq = self.mess_seq + 1
             elif (action_flag == 'e'):
-                print("Signing off. Have a nice day!")
+                print "Signing off. Have a nice day!"
                 break
             elif (action_flag == 'c'):
                 print ("Receiving messages: ")
@@ -97,6 +91,14 @@ class MessageClient():
                         break
                     else:
                         print (unpickled_data.source, " has sent:", unpickled_data.payload)
+            elif (action_flag == 'u'):
+                wrapped_msg = construct_message(4, self.mess_seq, self.id, 0, "")
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                data, catchgarbage = s.recvfrom(65536)
+                unpickled_data = pickle.loads(data)
+                wrapped_msg = construct_message(3, self.mess_seq, self.id, 0, "")
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
+                print "Userlist: ", unpickled_data.payload
             else:
-                print ("Invalid input.")
+                print "Invalid input."
         return

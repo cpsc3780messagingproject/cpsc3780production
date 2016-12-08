@@ -28,7 +28,6 @@ def get_ip_address(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 ip = get_ip_address('eth0')
-print("Your IP is " + ip)
 
 ############################################# Find and print user's IP #######
 
@@ -40,6 +39,8 @@ from modules.client import MessageClient
 
 #################### Take user input for server/client mode ##################
 while True:
+    print "Welcome to Seiren!"
+    print ("Your IP is " + ip)
     mode = raw_input("Run in server mode? [y/n]: ")
 ##############################################################################
 #################### Run in server mode ######################################

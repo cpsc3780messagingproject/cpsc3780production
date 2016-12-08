@@ -48,9 +48,9 @@ class MessageServer():
             setup = False
         while True:
             data, addr = s.recvfrom(65536)
-            print ("Connected by ", addr)
+            print "Connected by ", addr
             unpickled_data = pickle.loads(data)
-            print ("Client sent ", unpickled_data.type, unpickled_data.payload)
+            print "Client sent ", unpickled_data.type, unpickled_data.payload
             if (unpickled_data.type == 'SRV'):  
                 servmessage = unpickled_data.payload.split(";")
                 if (servmessage[0] == "Requesting access"):
@@ -73,28 +73,65 @@ class MessageServer():
                     highest_hops = 0                    
                     while True:
                         try:
-                            index_tester = servmessage[2+(iterations*3)]
+                            index_tester = servmessage[3+(iterations*4)]
                         except IndexError:
                             break
+                        known = False
                         for key, (x,y,z) in self.client_list.iteritems():
-                            if (key == servmessage[1+(iterations*3)]):
-                                if ((int(servmessage[2+(iterations*3)]) + 1) < key[1]):
-                                    y = int(servmessage[2+(iterations*3)]) + 1  
-                                    z = servmessage[3+(iterations*3)]
-                                if (int(servmessage(2+iterations*3)) > highest_hops):
-                                    highest_hops = (int(servmessage(2+iterations*3)))
+                            if (key == servmessage[1+(iterations*4)]):
+                                known = True
+                                if ((int(servmessage[3+(iterations*4)]) + 1) < key[1]):
+                                    y = int(servmessage[3+(iterations*4)]) + 1  
+                                    z = servmessage[4+(iterations*4)]
+                              #  if (int(servmessage[3+iterations*4]) > highest_hops):
+                                   # highest_hops = (int(servmessage[2+iterations*4]))
+                        if (known == False):
+                            print (servmessage[1+(iterations*4)])
+                            print (servmessage[2+(iterations*4)])
+                            print (servmessage[3+(iterations*4)])
+                            print (servmessage[4+(iterations*4)])
+                            self.client_list[servmessage[1+(iterations*4)]] = (servmessage[2+(iterations*4)], (int(servmessage[3+(iterations*4)]) + 1), servmessage[4+(iterations*4)])
                         iterations += 1
-                    if (self.rank == "0" and highest_hops < (int(self.rank) + int(self.lowerpeer[0]))):                           
-                        formatted_clientlist = "" 
+                    if (int(servmessage[1+(iterations*4)]) >= (int(self.rank) * 10 + 10)):
+                        pass
+                    else:                           
+                        formatted_clientlist = "Routed message;" 
                         for key, (x,y,z) in self.client_list.iteritems():
-                            formatted_clientlist += x + ";" + str(y) + ";" + z + ";"
+                            formatted_clientlist += key + ";" + x + ";" + str(y) + ";" + z + ";"
+                        formatted_clientlist += str(int(servmessage[1+(iterations*4)]) + 1) + ";"
                         wrapped_msg = construct_message(0,0,0,0,formatted_clientlist)
                         s.sendto(pickle.dumps(wrapped_msg), (self.lowerpeer[1], self.port))
                         s.sendto(pickle.dumps(wrapped_msg), (self.upperpeer[1], self.port))
+####################################################################################################
             elif (unpickled_data.type == 'SND'):
-                self.messages.append(unpickled_data)
                 wrapped_msg = construct_message(3,0,0,unpickled_data.source, "Message received!")
-                s.sendto(pickle.dumps(wrapped_msg), (addr))
+                s.sendto(pickle.dumps(wrapped_msg), (addr))                
+                
+                local = False
+                connected = False
+                neighbour = ""
+                for key, (x,y,z) in self.client_list.iteritems():
+                    if (key == unpickled_data.destination and z == self.host):
+                        local = True
+                        connected = True
+                        break
+                    if (key == unpickled_data.destination and z != self.host):
+                        connected = True
+                        neighbour = z
+                        break
+                if (local == True):
+                    self.messages.append(unpickled_data)
+                elif (local == False and connected == False):
+                    self.messages.append(unpickled_data)
+                elif (local == False and connected == True):
+                    while True:                    
+                        s.sendto(pickle.dumps(unpickled_data), (neighbour, self.port))
+                        data, addr = s.recvfrom(65536)
+                        unpickled_data_nonoverwriting = pickle.loads(data)
+                        if (unpickled_data_nonoverwriting.type == 'ACK'):
+                            break
+                        else:
+                            time.sleep(1)
 
             elif (unpickled_data.type == 'GET'):
                 for x in self.messages:
@@ -111,7 +148,7 @@ class MessageServer():
                 clientstring = ""
                 for key in self.client_list:
                     clientstring += key + ", "
-                print("Sending client list to user...")
+                print "Sending client list to user..."
                 wrapped_msg = construct_message(4, 0, 0, unpickled_data.source, clientstring) 
                 s.sendto(pickle.dumps(wrapped_msg), (addr))
 
@@ -139,12 +176,33 @@ class MessageServer():
                     self.client_list[unpickled_data.source] = (addr[0], 0, self.host)
                     formatted_clientlist = "Routed message;" 
                     for key, (x,y,z) in self.client_list.iteritems():
-                        formatted_clientlist += x + ";" + str(y) + ";" + z + ";"
+                        formatted_clientlist += key + ";" + x + ";" + str(y) + ";" + z + ";"
+                    formatted_clientlist += "1" + ";"
                     wrapped_msg = construct_message(0,0,0,0,formatted_clientlist)
                     s.sendto(pickle.dumps(wrapped_msg), (self.lowerpeer[1], self.port))
                     s.sendto(pickle.dumps(wrapped_msg), (self.upperpeer[1], self.port))
                     wrapped_msg = construct_message(3,0,0, unpickled_data.source, "Welcome, " + unpickled_data.source + "!")
                     s.sendto(pickle.dumps(wrapped_msg), (addr))
 
-   
- 
+            connected = False
+            neighbour = ""
+            new_messages = []
+            for key, (x,y,z) in self.client_list.iteritems():                
+                for msg in self.messages:
+                    if (key == msg.destination and z != self.host):
+                        connected = True
+                        neighbour = z
+                    if (connected == True):
+                        while True:                        
+                            s.sendto(pickle.dumps(msg), (neighbour, self.port))
+                            data, addr = s.recvfrom(65536)
+                            unpickled_data_nonoverwriting = pickle.loads(data)
+                            if (unpickled_data_nonoverwriting.type == 'ACK'):                                
+                                break
+                            else:
+                                time.sleep(1)
+                    else:
+                        new_messages.append(msg)
+                self.messages = new_messages
+                new_messages = []
+                     
