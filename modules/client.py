@@ -207,7 +207,7 @@ class MessageClient():
                         break #this will eventually be the server's way of signalling "end of messages" - probably won't be an empty payload tho
                     else:
                         self.messages[unpickled.data.seq] = unpickled_data
-                for key in self.messages
+                for key in self.messages:
                     print (self.messages[key].payload, "\n")
             
 
