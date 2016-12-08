@@ -23,29 +23,41 @@ class MessageServer():
         self.host = ip
         self.port = port
         self.rank = 0                       # Rank is used to determine which
-                                            # other server the server should
+        self.peerlist = []                  # other server the server should
                                             # talk to when updating client
                                             # lists. While it always starts at
                                             # 0, upon hooking a server into a
                                             # network, it will slot itself
                                             # into the highest open rank. 
-        self.peers = set()
         self.client_list = {}
         self.messages = []
 
 
-    def activate(self):
+    def activate(self, peer):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.bind((self.host, self.port))
-
-
+        if (peer != 0):
+            wrapped_msg = construct_message(0,0,0,0,"Requesting access;")          
+            s.sendto(pickle.dumps(wrapped_msg), (peer, port))
+            data, addr = s.recvfrom(65536)
+            unpickled_data = pickle.loads(data)
+            peerinfo = unpickled_data.payload.split(";")
+            self.rank = peerinfo[0]
+            self.peerlist.append(peerinfo[1],peerinfo[2])
+            self.peerlist.append(peerinfo[3],peerinfo[4])
+            wrapped_msg = construct_message(0,0,0,0,"New peer;" + self.host + ";" + self.rank)
         while True:
             data, addr = s.recvfrom(65536)
             print ("Connected by ", addr)
             unpickled_data = pickle.loads(data)
             print ("Client sent ", unpickled_data.type, unpickled_data.payload)
-#            if (unpickled_data.type == 'SRV'):       
-            if (unpickled_data.type == 'SND'):
+            if (unpickled_data.type == 'SRV'):  
+                servmessage = unpickled_data.payload.split(";")
+                   
+                if (servmessage[0] == "Requesting access")
+                elif (servmessage[0] == "New peer")
+
+            elif (unpickled_data.type == 'SND'):
                 self.messages.append(unpickled_data)
                 wrapped_msg = construct_message(3,0,0,unpickled_data.source, "Message received!")
                 s.sendto(pickle.dumps(wrapped_msg), (addr))

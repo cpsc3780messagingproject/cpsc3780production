@@ -41,15 +41,12 @@ while True:
     mode = raw_input("Run in server mode? [y/n]: ")
     if (mode == "y"):        
         print("Running in server mode.")
-        #net_serv = raw_input("Please enter the IP address of at least one other 
-        #                  server (or enter 0 to run as a root 
-        #                  server): "
-        #if (net_serv != "0"):
-        #seiren_server = MessageServer(5000)
-        #seiren_server.activate(net_serv)
-        #elif(net_serv == "0"):      
+        net_serv = raw_input("Please enter the IP address of at least one other "
+                              + "server (or enter 0 to run as a root " 
+                              + "server): ")
+     
         seiren_server = MessageServer(5000, get_ip_address('eth0'))  # Construct new MessageServer() object.
-        seiren_server.activate()
+        seiren_server.activate(net_serv)
 
         break
 
