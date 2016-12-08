@@ -171,7 +171,7 @@ class MessageClient():
             raw_msg = raw_input("Please input a message to transmit: ")
             wrapped_msg = construct_message(1, self.mess_seq, self.id, 0, raw_msg) 
             while True:
-                s.sendto(pickle.dumps(wrapped_msg), (self.server, 5000))
+                s.sendto(pickle.dumps(wrapped_msg), (self.host, 5000))
                 data, garbagecatch = self.clientsocket.recvfrom(65536)
                 unpickled_data = pickle.loads(data)
                 if (unpickled_data.type == 'ACK'):
