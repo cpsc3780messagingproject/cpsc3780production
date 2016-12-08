@@ -165,8 +165,8 @@ class MessageClient():
         threadLock = threading.Lock()
         threads = []
 
-        senderThread = sendThread(s, self.host, self.mess_seq, self.id, threadLock)
-        getterThread = getThread(s, self.host, self.id, threadLock)
+        senderThread = sendThread(s, self.host, self.mess_seq, self.id)
+        getterThread = getThread(s, self.host, self.id)
         getterThread.daemon = True
 
         senderThread.start()
