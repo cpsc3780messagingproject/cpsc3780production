@@ -81,7 +81,7 @@ class MessageClient():
                         time.sleep(1)
                         pass
                 self.mess_seq = self.mess_seq + 1
-            elif (action_flag == 'n'):
+            elif (action_flag == 'e'):
                 print("Signing off. Have a nice day!")
                 break
             elif (action_flag == 'c'):
@@ -97,5 +97,6 @@ class MessageClient():
                         break
                     else:
                         print (unpickled_data.source, " has sent:", unpickled_data.payload)
-                        
+            else:
+                print ("Invalid input.")
         return
